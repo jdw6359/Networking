@@ -16,6 +16,7 @@ class NetworkStatus():
         self.remoteSiteActive = remoteSiteActive
 
     def __str__(self):
+        status = ''
         if self.isAvailable():
             status = 'Available'
         else:
@@ -84,7 +85,6 @@ def checkStatus():
     return NetworkStatus(gatewayActive, remoteDNSActive, remoteSiteActive)
 
 def writeResults(status):
-    BASE_URL = 'http://checkin.binarysharks.com/api'
     BASE_URL = str(os.environ['BINARY_CHECK_IN_URL'])
 
     checkInUrl = BASE_URL + '/check_ins'
@@ -93,12 +93,8 @@ def writeResults(status):
     deviceId = str(os.environ['BINARY_DEVICE_ID'])
     time = str(datetime.datetime.now())
     monitoring_version = str(utils.monitoringVersion())
-    print 'monitoring version: '
-    print monitoring_version
     os_version = utils.kernelVersion()
 
-    # TODO: Get monitoring version from current git branch
-    # TODO: Get os_version from system
     # TODO: Get cell status
 
     values = dict(device_id=str(deviceId), monitoring_version=monitoring_version,
@@ -113,11 +109,15 @@ def main():
 
     # Determine the status by polling the various sources
     for i in range (5):
+        print 'about to check status'
         status = checkStatus()
+        print 'about to check status available...'
         if status.isAvailable():
             break
         else:
+            print 'sleeping'
             time.sleep(5)
+            print 'done sleeping'
     writeResults(str(status))
 main()
 

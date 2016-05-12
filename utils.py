@@ -58,7 +58,7 @@ Execute git command to retrieve commit id of HEAD
 '''
 def monitoringVersion():
   # TODO: refactor repo path to environment variable
-  repo_path = '/home/tina/Documents/repos/networking'
+  repo_path = str(os.environ['BINARY_PROJECT_PATH'])
   gd = '--git-dir=' + os.path.join(repo_path, '.git')
   wt = '--work-tree=' + repo_path
 
