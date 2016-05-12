@@ -57,8 +57,10 @@ def kernelVersion():
 Execute git command to retrieve commit id of HEAD
 '''
 def monitoringVersion():
-  # TODO: refactor repo path to environment variable
   repo_path = str(os.environ['BINARY_PROJECT_PATH'])
+
+  # When running git commands with crontab, must specify paths
+  # to git directory and working tree root
   gd = '--git-dir=' + os.path.join(repo_path, '.git')
   wt = '--work-tree=' + repo_path
 
