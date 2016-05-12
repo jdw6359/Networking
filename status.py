@@ -1,52 +1,31 @@
-import subprocess
-import os
+import urllib
 import urllib2
+import datetime
 
-print 'starting status check...'
+BASE_URL = 'http://localhost:3000'
 
-gatewayActive = False
-remoteDNSActive = False
-remoteSiteActive = False
+print 'making the GET request...'
 
-# determine gatewayAddress
-gatewayAddress = subprocess.check_output(['./gateway.sh'])
-print 'gateway address: ' + str(gatewayAddress)
-print 'pinging gateway...' + str(gatewayAddress)
-response = os.system('ping -c 4 ' + str(gatewayAddress))
-# ping command returns non-zero response when successful
-if response == 0:
-    print 'response from ping: ', response
-    gatewayActive = True
-else:
-    print 'no responses from ping!'
+# Make a GET request
+clientUrl = BASE_URL + '/clients'
+request = urllib2.Request(clientUrl)
+response = urllib2.urlopen(request)
+content = response.read()
 
-# ping remove DNS server
-remoteDNSAddress = '8.8.8.8'
-print 'pinging remote dns address: ' + str(remoteDNSAddress)
-response = os.system('ping -c 4 ' + str(remoteDNSAddress))
-if response == 0:
-    print 'response from ping: ', response
-    remoteDNSActive = True
-else:
-    print 'no response from ping!'
+print 'done making GET request...'
+print 'making the POST request...'
 
-# make http request 
-remoteSiteAddress = 'http://python.org/'
-print 'sending http request to remote site: ' + str(remoteSiteAddress)
-response = urllib2.urlopen(remoteSiteAddress)
-print 'response object: ' + str(response)
+deviceId = 'UMZUWcIgGbi9T_oOd5M1a9Ozo1lhVdVHrs-I5Ga1pyMVWiBsvY1CU42SQ4hc1icP'
+monitorUrl = BASE_URL + '/check_ins'
 
-# Determine how the http response will drive
-# remoteSiteActive value
-code = response.getcode()
-print 'response code: ' + str(code)
+time = str(datetime.datetime.now())
+status = "UP"
 
-if(code == 200):
-    remoteSiteActive = True
+values = dict(device_id=str(deviceId), status=status, check_in_time=time)
+data = urllib.urlencode(values)
+request = urllib2.Request(monitorUrl, data)
+response = urllib2.urlopen(request)
+content = response.read()
 
-
-print 'status check results...'
-print '[Gateway Active]: ' + str(gatewayActive)
-print '[Remote DNS Active]: ' + str(remoteDNSActive)
-print '[Remote Site Active]: ' + str(remoteSiteActive)
-
+print 'content: ' + str(content)
+print 'done making POST request'

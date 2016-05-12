@@ -1,0 +1,8 @@
+SHELL=/bin/bash
+
+# Not exactly sure which of the following paths are necessary to include in the PATH
+# TODO: reduce this list as appropriate
+PATH=/usr/lib64/qt-3.3/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/bin/git:/usr/sbin:/home/tina/.local/bin:/home/tina/bin:/home/tina/.local/bin:/home/tina/bin: 
+
+#########################################################3
+* * * * * . $HOME/.sharks; python /home/tina/Documents/repos/networking/check.py >> /home/tina/Documents/repos/networking/cron_output.txt 2>&1
