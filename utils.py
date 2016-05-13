@@ -40,6 +40,7 @@ def getIPFromHostname(hostname):
   args = command.split()
   ipLookupResponse = subprocess.check_output(args)
 
+  # TODO: return something here
   print ipLookupResponse
 
 '''
@@ -65,11 +66,19 @@ def monitoringVersion():
   wt = '--work-tree=' + repo_path
 
   args = ['git', gd, wt, 'rev-parse', 'HEAD']
-
   return subprocess.check_output(args).replace('\n','')
 
+def getMacAddress():
+    args = ['ifconfig']
+
+    # TODO: parse response - grab mac address from eth0 line
+    ifConfigResponse = subprocess.check_output(args)
+    print ifConfigResponse
+
 def testDriver():
-  print monitoringVersion()
+
+  getMacAddress()
+
   '''
   print 'testing utils.getDefaultGateway()...'
   gateway = getDefaultGateway()
