@@ -68,16 +68,27 @@ def monitoringVersion():
   args = ['git', gd, wt, 'rev-parse', 'HEAD']
   return subprocess.check_output(args).replace('\n','')
 
+'''
+Get the mac address of the eth0 port
+'''
 def getMacAddress():
-    args = ['ifconfig']
+  args = ['ifconfig']
 
-    # TODO: parse response - grab mac address from eth0 line
-    ifConfigResponse = subprocess.check_output(args)
-    print ifConfigResponse
+  # Change this flag to be 'eth0' when on pi
+  flag = 'enp0s25'
+
+  ifConfigResponse = subprocess.check_output(args).split('\n')
+  for i in range(0,len(ifConfigResponse)):
+    # If the current line contains the flag, then look at next line for mac address
+    if flag in ifConfigResponse[i]:
+      macIndex = i + 1
+      break
+  # The mac address is the second token in the line following the flag
+  return ifConfigResponse[macIndex].split()[1]
 
 def testDriver():
 
-  getMacAddress()
+  print getMacAddress()
 
   '''
   print 'testing utils.getDefaultGateway()...'
