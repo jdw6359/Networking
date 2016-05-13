@@ -10,8 +10,11 @@ import time
 import utils
 
 class NetworkStatus():
-    def __init__(self, gatewayActive, remoteDNSActive, remoteSiteActive):
-        self.gatewayActive = gatewayActive
+    def __init__(self, defaultRouterActive, cellRouterActive,
+        remoteDNSActive, remoteSiteActive):
+        
+        self.defaultRouterActive = defaultRouterActive
+        self.cellRouterActive = cellRouterActive
         self.remoteDNSActive = remoteDNSActive
         self.remoteSiteActive = remoteSiteActive
 
@@ -20,8 +23,12 @@ class NetworkStatus():
         if self.isAvailable():
             status = 'Available'
         else:
-            if(not self.gatewayActive):
-                status = 'Gateway Down'
+            if(not self.defaultRouterActive):
+                status = 'Default Router Down'
+            if(not self.cellRouterActive):
+                if status != '':
+                    status += ', '
+                status += 'Cell Router Down'
             if(not self.remoteDNSActive):
                 if status != '':
                     status += ', '
@@ -33,22 +40,36 @@ class NetworkStatus():
         return status
 
     def isAvailable(self):
-        return self.gatewayActive and self.remoteDNSActive and self.remoteSiteActive
+        return (self.defaultRouterActive and self.cellRouterActive
+            and self.remoteDNSActive and self.remoteSiteActive)
 
 def checkStatus():
-    gatewayActive = False
+    defaultRouterActive = False
+    cellRouterActive = False
     remoteDNSActive = False
     remoteSiteActive = False
 
     # determine gatewayAddress
-    gatewayAddress = utils.getDefaultGateway()
-    print 'gateway address: ' + str(gatewayAddress)
-    print 'pinging gateway...' + str(gatewayAddress)
+    defaultRouterAddress = utils.getDefaultGateway()
+    print 'default router address: ' + str(defaultRouterAddress)
+    print 'pinging default router...' + str(defaultRouterAddress)
     
-    pingResponse = utils.pingAddress(gatewayAddress)
+    pingResponse = utils.pingAddress(defaultRouterAddress)
     if pingResponse == 0:
         print 'response from ping: ', pingResponse
-        gatewayActive = True
+        defaultRouterActive = True
+    else:
+        print 'no responses from ping!'
+
+    # ping the cell router
+    cellRouterAddress = '10.123.123.33'
+    print 'cell router address: ' + str(cellRouterAddress)
+    print 'pinging cell router...' + str(cellRouterAddress)
+
+    pingResponse = utils.pingAddress(cellRouterAddress)
+    if pingResponse == 0:
+        print 'response from ping: ', pingResponse
+        cellRouterActive = True
     else:
         print 'no responses from ping!'
 
@@ -74,15 +95,19 @@ def checkStatus():
     code = response.getcode()
     print 'response code: ' + str(code)
 
+    # TODO: refactor the interpretation of response / code
     if(code == 200):
         remoteSiteActive = True
 
+
     print 'status check results...'
-    print '[Gateway Active]: ' + str(gatewayActive)
+    print '[Default Router Active]: ' + str(defaultRouterActive)
+    print '[Cell Router Active]: ' + str(cellRouterActive)
     print '[Remote DNS Active]: ' + str(remoteDNSActive)
     print '[Remote Site Active]: ' + str(remoteSiteActive)
 
-    return NetworkStatus(gatewayActive, remoteDNSActive, remoteSiteActive)
+    return NetworkStatus(defaultRouterActive, cellRouterActive,
+        remoteDNSActive, remoteSiteActive)
 
 def writeResults(status):
     BASE_URL = str(os.environ['BINARY_CHECK_IN_URL'])

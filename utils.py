@@ -20,7 +20,7 @@ Pings the provided address.
 Non-successful pings return non-zero values
 '''
 def pingAddress(address):
-  return os.system('ping -c 4 ' + str(address))
+  return os.system('ping -c 1 ' + str(address))
 
 '''
 Grabs the ARP table from machine
