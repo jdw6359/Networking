@@ -109,6 +109,16 @@ def checkStatus():
     return NetworkStatus(defaultRouterActive, cellRouterActive,
         remoteDNSActive, remoteSiteActive)
 
+
+'''
+Take action depending on the network status
+'''
+def handleResults(networkStatus):
+    print 'handling results'
+
+'''
+Write the results up to the web service
+'''
 def writeResults(status):
     BASE_URL = str(os.environ['BINARY_CHECK_IN_URL'])
 
@@ -135,15 +145,19 @@ def main():
     # Determine the status by polling the various sources
     for i in range (5):
         print 'about to check status'
-        status = checkStatus()
+        networkStatus = checkStatus()
         print 'about to check status available...'
-        if status.isAvailable():
+        if networkStatus.isAvailable():
             break
         else:
             print 'sleeping'
             time.sleep(5)
             print 'done sleeping'
-    writeResults(str(status))
+
+    # take action depending on the results of the network status
+    handleResults(networkStatus)
+    # write the results to the web service
+    writeResults(str(networkStatus))
 main()
 
 # need to tell script which vlan to run ping out of
