@@ -74,7 +74,7 @@ Get the mac address of the eth0 port
 def getMacAddress():
   args = ['ifconfig']
 
-  # Change this flag to be 'eth0' when on pi
+  # TODO: Change this flag to be 'eth0' when on pi
   flag = 'enp0s25'
 
   ifConfigResponse = subprocess.check_output(args).split('\n')
