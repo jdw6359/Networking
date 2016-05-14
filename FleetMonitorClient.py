@@ -30,9 +30,12 @@ class FleetMonitorClient():
 		data = urllib.urlencode(values)
 		request = urllib2.Request(checkInUrl, data)
 
-		# TODO: wrap this request with a fail handler -> write to local storage
-		response = urllib2.urlopen(request)
-		content = response.read()
+		try:
+			response = urllib2.urlopen(request)
+			content = response.read()
+		except urllib2.URLError:
+			# TODO: write check in record to local storage
+			pass
 
 	def postDowntimeSegment(self, startTime, endTime, bytesTraffic):
 		downtimeSegmentUrl = self.__baseUrl + '/downtime_segments'
@@ -46,5 +49,6 @@ class FleetMonitorClient():
 		data = urllib.urlencode(values)
 		request = urllib2.Request(downtimeSegmentUrl, data)
 
+		# TODO: handle case where writing downtime segment fails
 		response = urllib2.urlopen(request)
 		content = response.read()

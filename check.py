@@ -69,6 +69,7 @@ def checkStatus():
     remoteSiteActive = False
 
     # determine gatewayAddress
+    # TODO: fix utils.getDefaultGateway() - not getting correct value when wifi down
     defaultRouterAddress = utils.getDefaultGateway()
     print 'default router address: ' + str(defaultRouterAddress)
     print 'pinging default router...' + str(defaultRouterAddress)
@@ -93,6 +94,7 @@ def checkStatus():
     else:
         print 'no responses from ping!'
 
+
     # ping remove DNS server
     remoteDNSAddress = '8.8.8.8'
     print 'pinging remote dns address: ' + str(remoteDNSAddress)
@@ -103,21 +105,26 @@ def checkStatus():
     else:
         print 'no response from ping!'
 
+
     # make http request 
     remoteSiteAddress = 'http://python.org/'
     print 'sending http request to remote site: ' + str(remoteSiteAddress)
-    response = urllib2.urlopen(remoteSiteAddress)
-    print 'response object: ' + str(response)
-    # Determine how the http response will drive
-    # remoteSiteActive value
-    code = response.getcode()
-    print 'response code: ' + str(code)
-    # TODO: refactor the interpretation of response / code
-    if(code == 200):
-        remoteSiteActive = True
+    try:
+        response = urllib2.urlopen(remoteSiteAddress)
+        print 'response object: ' + str(response)
+        # Determine how the http response will drive
+        # remoteSiteActive value
+        code = response.getcode()
+        print 'response code: ' + str(code)
+        # TODO: refactor the interpretation of response / code
+        if(code == 200):
+            remoteSiteActive = True
+    except urllib2.URLError:
+        remoteSiteActive = False
+
 
     # TODO: remove this
-    defaultRouterActive = True
+    # defaultRouterActive = True
 
     print 'status check results...'
     print '[Default Router Active]: ' + str(defaultRouterActive)
