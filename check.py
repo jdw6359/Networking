@@ -141,6 +141,10 @@ def handleResults(networkStatus):
             print 'default router has JUST become available'
             # TODO: issue commands to switch via telnet
             # - reconfigure network to use defaultRouter as gateway
+            
+            # TODO: MAKE SURE that network has been properly reconfigured
+            # before ending downtime, otherwise posting of downtime segment
+            # will likely fail
             downtimeSegmentUtil.endDowntime()
     else:
         # If there is not an active downtime segment,

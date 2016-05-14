@@ -1,5 +1,6 @@
 import datetime
 import os
+from FleetMonitorClient import *
 
 '''
 Utility for interacting with downtime segment file
@@ -35,13 +36,15 @@ class DowntimeSegmentUtil():
 
         # TODO: determine how many bytes of data have been consumed
         # by cell router during the course of the downtime segment
-        bytesOfTraffic = 1234
+        bytesTraffic = 1234
 
         print '[Downtime Segment] downtime ranging from ' + downtimeSegmentStartTime + ' - ' + downtimeSegmentEndTime
-        print '[Downtime Segment] bytes of traffic through cell router: ' + str(bytesOfTraffic)
+        print '[Downtime Segment] bytes of traffic through cell router: ' + str(bytesTraffic)
         print '[Downtime Segment] writing segment data to fleet monitor...'
 
-        # TODO: write results to web service
+        fleetMonitorClient = FleetMonitorClient()
+        fleetMonitorClient.postDowntimeSegment(downtimeSegmentStartTime,
+            downtimeSegmentEndTime, bytesTraffic)
 
         # remove the downtime segment tmp file
         os.remove(self.filePath)
