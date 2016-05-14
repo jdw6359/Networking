@@ -9,7 +9,7 @@ class DowntimeSegmentUtil():
     def __init__(self):
         # TODO: change this path to more conventional system
         # location as opposed to inside codebase
-        self.filePath='tmp/downtime_segment.txt'
+        self.filePath='downtime_segment.txt'
 
     '''
     Write current time to file to mark the start of downtime
