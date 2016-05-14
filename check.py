@@ -10,6 +10,7 @@ import time
 
 import utils
 from DowntimeSegmentUtil import *
+from FleetMonitorClient import *
 
 class NetworkStatus():
     def __init__(self, defaultRouterActive, cellRouterActive,
@@ -155,24 +156,9 @@ def handleResults(networkStatus):
 Write the results up to the web service
 '''
 def writeResults(status):
-    BASE_URL = str(os.environ['BINARY_CHECK_IN_URL'])
-
-    checkInUrl = BASE_URL + '/check_ins'
-
-    # TODO: Use MAC address to get device id
-    deviceId = str(os.environ['BINARY_DEVICE_ID'])
-    time = str(datetime.datetime.now())
-    monitoring_version = str(utils.monitoringVersion())
-    os_version = utils.kernelVersion()
-
-    # TODO: Get cell status
-
-    values = dict(device_id=str(deviceId), monitoring_version=monitoring_version,
-        os_version=os_version, primary_status=status, cell_status=status, check_in_time=time)
-    data = urllib.urlencode(values)
-    request = urllib2.Request(checkInUrl, data)
-    response = urllib2.urlopen(request)
-    content = response.read()
+    # Create a new FleetMonitorClient instance
+    fleetMonitorClient = FleetMonitorClient()
+    fleetMonitorClient.postCheckIn(status)
 
 def main():
     print 'starting status check...'
