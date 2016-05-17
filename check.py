@@ -9,6 +9,7 @@ import os
 import time
 
 import utils
+from CheckInUtil import *
 from DowntimeSegmentUtil import *
 from FleetMonitorClient import *
 
@@ -153,6 +154,7 @@ def handleResults(networkStatus):
             # before ending downtime, otherwise posting of downtime segment
             # will likely fail
             downtimeSegmentUtil.endDowntime()
+
     else:
         # If there is not an active downtime segment,
         # we have JUST lost defaultRouter availability
@@ -164,7 +166,7 @@ def handleResults(networkStatus):
             # switchAddress = '10.123.123.35'
 
 '''
-Write the results up to the web service
+Attempt to write the results up to the web service
 '''
 def writeResults(status):
     # Create a new FleetMonitorClient instance
