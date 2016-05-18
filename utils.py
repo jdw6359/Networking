@@ -41,7 +41,6 @@ def getIPFromHostname(hostname):
   ipLookupResponse = subprocess.check_output(args)
 
   # TODO: return something here
-  print ipLookupResponse
 
 '''
 Query system for kernel version
@@ -87,33 +86,9 @@ def getMacAddress():
   return ifConfigResponse[macIndex].split()[1]
 
 def testDriver():
+  # TODO: test functionality here
+  pass
 
-  print getMacAddress()
-
-  '''
-  print 'testing utils.getDefaultGateway()...'
-  gateway = getDefaultGateway()
-  print 'gateway: ' + str(gateway)
-
-  print BREAK_LINE
-
-  print 'testing utils.pingAddress()...'
-  pingAddress('8.8.8.8')
-
-  print BREAK_LINE
-
-  print 'testing utils.getARPTable()...'
-  arpTable = getArpTable()
-  print 'arp table: ' + str(arpTable)
-
-  # arp table is a list records, each their own list of values
-  hostname = arpTable[0][0]
-
-  print BREAK_LINE
-
-  print 'testing utils.ipFromHostname()...'
-  ipAddress = getIPFromHostname(hostname)
-  '''
 # If we are executing this file directly execute the following
 if(__name__ == "__main__"):
   testDriver()

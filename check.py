@@ -7,6 +7,7 @@ import datetime
 import os
 # Used for putting script to sleep
 import time
+import logging
 
 import utils
 from CheckInUtil import *
@@ -72,66 +73,65 @@ def checkStatus():
     # determine gatewayAddress
     # TODO: fix utils.getDefaultGateway() - not getting correct value when wifi down
     defaultRouterAddress = utils.getDefaultGateway()
-    print 'default router address: ' + str(defaultRouterAddress)
-    print 'pinging default router...' + str(defaultRouterAddress)
+    logging.info('default router address: %s', str(defaultRouterAddress))
+    logging.info('pinging default router...%s', str(defaultRouterAddress))
     
     pingResponse = utils.pingAddress(defaultRouterAddress)
     if pingResponse == 0:
-        print 'response from ping: ', pingResponse
+        logging.info('response from ping: %s', pingResponse)
         defaultRouterActive = True
     else:
-        print 'no responses from ping!'
+        logging.warning('no responses from ping to %s', defaultRouterAddress)
 
     # ping the cell router
     #TODO: change cellRouterAddress
     cellRouterAddress = utils.getDefaultGateway()
     #cellRouterAddress = '10.123.123.33'
-    print 'cell router address: ' + str(cellRouterAddress)
-    print 'pinging cell router...' + str(cellRouterAddress)
+    logging.info('cell router address: %s', cellRouterAddress)
+    logging.info('pinging cell router...%s', cellRouterAddress)
     pingResponse = utils.pingAddress(cellRouterAddress)
     if pingResponse == 0:
-        print 'response from ping: ', pingResponse
+        logging.info('response from ping: %s', pingResponse)
         cellRouterActive = True
     else:
-        print 'no responses from ping!'
+        logging.warning('no responses from ping to %s', cellRouterAddress)
 
 
     # ping remove DNS server
     remoteDNSAddress = '8.8.8.8'
-    print 'pinging remote dns address: ' + str(remoteDNSAddress)
+    logging.info('pinging remote dns address: %s', remoteDNSAddress)
     pingResponse = utils.pingAddress(remoteDNSAddress)
     if pingResponse == 0:
-        print 'response from ping: ', pingResponse
+        logging.info('response from ping: %s', pingResponse)
         remoteDNSActive = True
     else:
-        print 'no response from ping!'
+        logging.warning('no response from ping %s', remoteDNSAddress)
 
 
     # make http request 
     remoteSiteAddress = 'http://python.org/'
-    print 'sending http request to remote site: ' + str(remoteSiteAddress)
+    logging.info('sending http request to remote site: %s', remoteSiteAddress)
     try:
         response = urllib2.urlopen(remoteSiteAddress)
-        print 'response object: ' + str(response)
+        logging.info('response object: %s', str(response))
         # Determine how the http response will drive
         # remoteSiteActive value
         code = response.getcode()
-        print 'response code: ' + str(code)
+        logging.info('response code: %s', str(code))
         # TODO: refactor the interpretation of response / code
         if(code == 200):
             remoteSiteActive = True
     except urllib2.URLError:
         remoteSiteActive = False
 
-
     # TODO: remove this
     # defaultRouterActive = True
 
-    print 'status check results...'
-    print '[Default Router Active]: ' + str(defaultRouterActive)
-    print '[Cell Router Active]: ' + str(cellRouterActive)
-    print '[Remote DNS Active]: ' + str(remoteDNSActive)
-    print '[Remote Site Active]: ' + str(remoteSiteActive)
+    logging.info('status check results...')
+    logging.info('[Default Router Active]: %s', str(defaultRouterActive))
+    logging.info('[Cell Router Active]: %s', str(cellRouterActive))
+    logging.info('[Remote DNS Active]: %s', str(remoteDNSActive))
+    logging.info('[Remote Site Active]: %s', str(remoteSiteActive))
 
     return NetworkStatus(defaultRouterActive, cellRouterActive,
         remoteDNSActive, remoteSiteActive)
@@ -146,7 +146,7 @@ def handleResults(networkStatus):
     if(networkStatus.defaultRouterActive):
         # Check to see if the defaultRouter has JUST become available
         if(downtimeSegmentUtil.downtimeSegmentActive()):
-            print 'default router has JUST become available'
+            logging.warning('default router has JUST become available')
             # TODO: issue commands to switch via telnet
             # - reconfigure network to use defaultRouter as gateway
             
@@ -159,7 +159,7 @@ def handleResults(networkStatus):
         # If there is not an active downtime segment,
         # we have JUST lost defaultRouter availability
         if(not downtimeSegmentUtil.downtimeSegmentActive()):
-            print 'default router has JUST gone down'
+            logging.warning('default router has JUST gone down')
             downtimeSegmentUtil.startDowntime()
             # TODO: issue commands to switch via telnet
             # - reconfigure network to use cellRouter as gateway
@@ -174,19 +174,20 @@ def writeResults(status):
     fleetMonitorClient.postCheckIn(status)
 
 def main():
-    print 'starting status check...'
+    logging.basicConfig(filename=str(os.environ['BINARY_LOG_FILE']), level=logging.WARNING)
+    logging.info('starting status check...')
 
     # Determine the status by polling the various sources
     for i in range (3):
-        print 'about to check status'
+        logging.info('about to check status')
         networkStatus = checkStatus()
-        print 'about to check status available...'
+        logging.info('about to check status available...')
         if networkStatus.isAvailable():
             break
         else:
-            print 'sleeping'
+            logging.info('sleeping')
             time.sleep(5)
-            print 'done sleeping'
+            logging.info('done sleeping')
 
     # take action depending on the results of the network status
     handleResults(networkStatus)

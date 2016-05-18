@@ -3,6 +3,7 @@ import urllib
 import urllib2
 import datetime
 import utils
+import logging
 
 '''
 Utility to interact with fleetmonitor web service
@@ -34,8 +35,7 @@ class FleetMonitorClient():
 			response = urllib2.urlopen(request)
 			content = response.read()
 		except urllib2.URLError:
-			# TODO: write a fatal log message
-			pass
+			logging.error('POSTing of checkin failed')
 
 	def postDowntimeSegment(self, startTime, endTime, bytesTraffic):
 		downtimeSegmentUrl = self.__baseUrl + '/downtime_segments'
@@ -53,5 +53,4 @@ class FleetMonitorClient():
 			response = urllib2.urlopen(request)
 			content = response.read()
 		except urllib2.URLError:
-			# TODO: write a fatal log message
-			pass
+			logging.error('POSTing of downtime segment failed')

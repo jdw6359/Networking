@@ -1,6 +1,7 @@
 import datetime
 import os
 from FleetMonitorClient import *
+import logging
 
 '''
 Utility for interacting with downtime segment file
@@ -15,18 +16,17 @@ class DowntimeSegmentUtil():
     Write current time to file to mark the start of downtime
     '''
     def startDowntime(self):
-        print '[Downtime Segment] starting ...'
+        logging.warning('[Downtime Segment] starting ...')
         with open(self.filePath, 'w') as downtimeSegmentFile:
             downtimeSegmentStartTime = str(datetime.datetime.now())
             downtimeSegmentFile.write(downtimeSegmentStartTime)
-        print '[Downtime Segment] downtime started at ' + downtimeSegmentStartTime
+        logging.warning('[Downtime Segment] downtime started at %s', downtimeSegmentStartTime)
 
     '''
     Determine start and end time of downtime segment, traffic through
     cell router, write results to fleet monitor, flush tmp downtime file
     '''
     def endDowntime(self):
-        print '[Downtime Segment] ending ...'
         # get the start time of the downtime segment
         with open(self.filePath) as downtimeSegmentFile:
             downtimeSegmentStartTime = downtimeSegmentFile.read()
@@ -34,13 +34,15 @@ class DowntimeSegmentUtil():
         # end time of the downtime segment is based on current time
         downtimeSegmentEndTime = str(datetime.datetime.now())
 
+        logging.warning('[Downtime Segment] ending ... %s', str(downtimeSegmentEndTime))
+
         # TODO: determine how many bytes of data have been consumed
         # by cell router during the course of the downtime segment
         bytesTraffic = 1234
 
-        print '[Downtime Segment] downtime ranging from ' + downtimeSegmentStartTime + ' - ' + downtimeSegmentEndTime
-        print '[Downtime Segment] bytes of traffic through cell router: ' + str(bytesTraffic)
-        print '[Downtime Segment] writing segment data to fleet monitor...'
+        logging.warning('[Downtime Segment] downtime ranging from %s - %s', downtimeSegmentStartTime, downtimeSegmentEndTime)
+        logging.warning('[Downtime Segment] bytes of traffic through cell router: %s', str(bytesTraffic))
+        logging.warning('[Downtime Segment] writing segment data to fleet monitor...')
 
         fleetMonitorClient = FleetMonitorClient()
         fleetMonitorClient.postDowntimeSegment(downtimeSegmentStartTime,
@@ -60,9 +62,6 @@ class DowntimeSegmentUtil():
         return os.path.isfile(self.filePath)
 
 if(__name__ == '__main__'):
+    # Test functionality here
     downtimeSegmentUtil = DowntimeSegmentUtil()
     
-    #downtimeSegmentUtil.startDowntime()
-    downtimeSegmentUtil.endDowntime()
-    
-    print downtimeSegmentUtil.downtimeSegmentActive()
