@@ -39,7 +39,7 @@ class SwitchUtil():
 		tn.write('config t')
 
 		print 'config t entered'
-		tn.write('int GigabitEthernet 0/8\n')
+		tn.write('int GigabitEthernet0/8\n')
 		tn.write('switchport access vlan ' + str(vlan) + ' \n')
 
 		print 'vlan switched to 900'
@@ -73,7 +73,7 @@ admin
 ena
 1pmlamsh
 config t
-int GigabitEthernet 0/8
+int GigabitEthernet0/8
 switchport access vlan 902
 exit
 exit
@@ -88,7 +88,7 @@ admin
 ena
 1pmlamsh
 config t
-int GigabitEthernet 0/8
+int GigabitEthernet0/8
 switchport access vlan 900
 exit
 exit
