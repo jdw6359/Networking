@@ -11,6 +11,7 @@ import logging
 
 import utils
 from CheckInUtil import *
+from SwitchUtil import *
 from DowntimeSegmentUtil import *
 from FleetMonitorClient import *
 
@@ -71,8 +72,7 @@ def checkStatus():
     remoteSiteActive = False
 
     # determine gatewayAddress
-    # TODO: fix utils.getDefaultGateway() - not getting correct value when wifi down
-    defaultRouterAddress = utils.getDefaultGateway()
+    defaultRouterAddress = os.environ['BINARY_DEFAULT_GATEWAY_ADDRESS']
     logging.info('default router address: %s', str(defaultRouterAddress))
     logging.info('pinging default router...%s', str(defaultRouterAddress))
     
@@ -84,11 +84,10 @@ def checkStatus():
         logging.warning('no responses from ping to %s', defaultRouterAddress)
 
     # ping the cell router
-    #TODO: change cellRouterAddress
-    cellRouterAddress = utils.getDefaultGateway()
     #cellRouterAddress = '10.123.123.33'
-    logging.info('cell router address: %s', cellRouterAddress)
-    logging.info('pinging cell router...%s', cellRouterAddress)
+    cellRouterAddress = os.environ['BINARY_DEFAULT_GATEWAY_ADDRESS']
+    logging.info('cell router address: %s', str(cellRouterAddress))
+    logging.info('pinging cell router...%s', str(cellRouterAddress))
     pingResponse = utils.pingAddress(cellRouterAddress)
     if pingResponse == 0:
         logging.info('response from ping: %s', pingResponse)
@@ -150,6 +149,12 @@ def handleResults(networkStatus):
             # TODO: issue commands to switch via telnet
             # - reconfigure network to use defaultRouter as gateway
             
+            # instantiate switch util
+            switchUtil = SwitchUtil()
+
+            # TODO: wrap in an environment check
+            switchUtil.useDefaultRouter()
+
             # TODO: MAKE SURE that network has been properly reconfigured
             # before ending downtime, otherwise posting of downtime segment
             # will likely fail
@@ -163,7 +168,12 @@ def handleResults(networkStatus):
             downtimeSegmentUtil.startDowntime()
             # TODO: issue commands to switch via telnet
             # - reconfigure network to use cellRouter as gateway
-            # switchAddress = '10.123.123.35'
+
+            # instantiate switch util
+            switchUtil = SwitchUtil()
+
+            # TODO: invoke commands on switch util (wrap in env check)
+            switchUtil.useCellRouter()
 
 '''
 Attempt to write the results up to the web service
@@ -202,3 +212,6 @@ main()
 
 # only perform communication with web service through default connection
 # report same metrics
+
+#TODO store mac address from 'arp 192.168.1.1' in config (mac of default gateway)
+#TODO store mac address from 'arp 10.123.123.33' from pi (mac of cell router)

@@ -5,17 +5,6 @@ from uuid import getnode as get
 BREAK_LINE = '\n********************\n'
 
 '''
-Determines the default gateway using ip route
-'''
-def getDefaultGateway():
-  command = 'ip route'
-  args = command.split()
-  ipRouteResponse = subprocess.check_output(args).split('\n')
-  gatewayLine = ipRouteResponse[0].split()
-  defaultGateway = gatewayLine[2]
-  return defaultGateway
-
-'''
 Pings the provided address.
 Non-successful pings return non-zero values
 '''
