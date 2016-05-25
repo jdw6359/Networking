@@ -14,53 +14,52 @@ class SwitchUtil():
 	def address(self):
 		return self.__address
 
-	def useDefaultRouter(self):
-		print 'use default router invoked...'
-
+	def changeVlan(self, vlan):
 		# Instantiate telnet client
 		tn = telnetlib.Telnet(self.__address)
+
+		print 'telnet client created'
 
 		tn.read_until('Username: ')
 		tn.write('admin\n')
 
+		print 'username prompted and written'
+
 		tn.read_until('Password: ')
 		tn.write('1pmlamsh\n')
+
+		print 'password prompted and written'
 
 		tn.write('ena\n')
 		tn.read_until('Password: ')
 		tn.write('1pmlamsh\n')
 
+		print 'ena written and password prompted / written'
+
 		tn.write('config t')
+
+		print 'config t entered'
 		tn.write('int GigabitEthernet 0/8\n')
-		tn.write('switchport access vlan 900\n')
+		tn.write('switchport access vlan ' + str(vlan) + ' \n')
+
+		print 'vlan switched to 900'
 		tn.write('exit')
 		tn.write('exit')
 		tn.write('exit')
 		tn.close()
+
+		print 'exited and closed...'
+
+	def useDefaultRouter(self):
+		print 'use default router invoked...'
+		print 'change vlan invoked with 900'
+		self.changeVlan(900)
 
 	def useCellRouter(self):
 		print 'use cell router invoked...'
+		print 'change vlan invoked with 902'
+		self.changeVlan(902)
 
-		# Instantiate telnet client
-		tn = telnetlib.Telnet(self.__address)
-
-		tn.read_until('Username: ')
-		tn.write('admin\n')
-
-		tn.read_until('Password: ')
-		tn.write('1pmlamsh\n')
-
-		tn.write('ena\n')
-		tn.read_until('Password: ')
-		tn.write('1pmlamsh\n')
-
-		tn.write('config t')
-		tn.write('int GigabitEthernet 0/8\n')
-		tn.write('switchport access vlan 902\n')
-		tn.write('exit')
-		tn.write('exit')
-		tn.write('exit')
-		tn.close()
 
 if (__name__ == '__main__'):
 	util = SwitchUtil()
