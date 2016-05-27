@@ -43,7 +43,7 @@ class SwitchUtil():
 		tn.write('exit\n')
 
 		print tn.read_until('bid-sw-001(config)#')
-		tn.write('exit')
+		tn.write('exit\n')
 
 		print tn.read_until('bid-sw-001#')
 		tn.write('exit\n')		
