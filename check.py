@@ -10,7 +10,6 @@ import time
 import logging
 
 import utils
-from CheckInUtil import *
 from SwitchUtil import *
 from DowntimeSegmentUtil import *
 from FleetMonitorClient import *
