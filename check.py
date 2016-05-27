@@ -140,8 +140,7 @@ def handleResults(networkStatus):
             # instantiate switch util
             switchUtil = SwitchUtil()
 
-            # TODO: issue arp commands
-
+            utils.arpWipe()
             # TODO: wrap in an environment check
             switchUtil.useDefaultRouter()
 
@@ -162,8 +161,7 @@ def handleResults(networkStatus):
             # instantiate switch util
             switchUtil = SwitchUtil()
 
-            # TODO: issue ARP commands
-
+            utils.arpWipe()
             # TODO: invoke commands on switch util (wrap in env check)
             switchUtil.useCellRouter()
 

@@ -74,6 +74,11 @@ def getMacAddress():
   # The mac address is the second token in the line following the flag
   return ifConfigResponse[macIndex].split()[1]
 
+def arpWipe():
+  command = 'sudo arping -U -I eth0.900 192.168.179.1 -c 1'
+  args = command.split()
+  os.system(args)
+
 def testDriver():
   # TODO: test functionality here
   pass
