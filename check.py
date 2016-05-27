@@ -71,7 +71,7 @@ def checkStatus():
         logging.warning('no responses from ping to %s', defaultRouterAddress)
 
 
-'''
+    '''
     # TODO: move into own script
     # ping the cell router
     #cellRouterAddress = '10.123.123.33'
@@ -84,7 +84,7 @@ def checkStatus():
         cellRouterActive = True
     else:
         logging.warning('no responses from ping to %s', cellRouterAddress)
-'''
+    '''
 
     # ping remove DNS server
     remoteDNSAddress = '8.8.8.8'
