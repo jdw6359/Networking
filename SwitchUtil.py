@@ -18,34 +18,33 @@ class SwitchUtil():
 		# Instantiate telnet client
 		tn = telnetlib.Telnet(self.__address)
 
-		print 'telnet client created'
-
-		tn.read_until('Username: ')
+		print tn.read_until('Username: ')
 		tn.write('admin\n')
 
-		print 'username prompted and written'
-
-		tn.read_until('Password: ')
+		print tn.read_until('Password: ')
 		tn.write('1pmlamsh\n')
 
-		print 'password prompted and written'
-
+		print tn.read_until('bid-sw-001>')
 		tn.write('ena\n')
-		tn.read_until('Password: ')
+
+		print tn.read_until('Password: ')
 		tn.write('1pmlamsh\n')
 
-		print 'ena written and password prompted / written'
+		print tn.read_until('bid-sw-001#')
+		tn.write('config t\n')
 
-		tn.write('config t')
-
-		print 'config t entered'
+		print tn.read_until('bid-sw-001(config)#')
 		tn.write('int GigabitEthernet0/8\n')
-		tn.write('switchport access vlan ' + str(vlan) + ' \n')
 
-		print 'vlan switched to 900'
-		tn.write('exit')
-		tn.write('exit')
-		tn.write('exit')
+		print tn.read_until('bid-sw-001(config-if)#')
+		tn.write('switchport access vlan 900\n')
+
+		print 'done, need to close'
+
+		#tn.write('int GigabitEthernet0/8\n')
+		#tn.write('switchport access vlan ' + str(vlan) + ' \n')
+
+		print 'vlan switched to ' + str(vlan)
 		tn.close()
 
 		print 'exited and closed...'
