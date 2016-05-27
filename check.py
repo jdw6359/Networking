@@ -187,7 +187,7 @@ def main():
     logging.info('starting status check...')
 
     # Determine the status by polling the various sources
-    for i in range (3):
+    for i in range (1):
         logging.info('about to check status')
         networkStatus = checkStatus()
         logging.info('about to check status available...')
@@ -195,7 +195,7 @@ def main():
             break
         else:
             logging.info('sleeping')
-            time.sleep(5)
+            time.sleep(3)
             logging.info('done sleeping')
 
     # take action depending on the results of the network status
