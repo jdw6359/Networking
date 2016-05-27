@@ -37,7 +37,7 @@ class SwitchUtil():
 		tn.write('int GigabitEthernet0/8\n')
 
 		print tn.read_until('bid-sw-001(config-if)#')
-		tn.write('switchport access ' + str(vlan) + '\n')
+		tn.write('switchport access vlan ' + str(vlan) + '\n')
 
 		print tn.read_until('bid-sw-001(config-if)#')
 		tn.write('exit\n')
