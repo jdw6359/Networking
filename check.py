@@ -15,11 +15,9 @@ from DowntimeSegmentUtil import *
 from FleetMonitorClient import *
 
 class NetworkStatus():
-    def __init__(self, defaultRouterActive, cellRouterActive,
-        remoteDNSActive, remoteSiteActive):
+    def __init__(self, defaultRouterActive, remoteDNSActive, remoteSiteActive):
         
         self.__defaultRouterActive = defaultRouterActive
-        self.__cellRouterActive = cellRouterActive
         self.__remoteDNSActive = remoteDNSActive
         self.__remoteSiteActive = remoteSiteActive
 
@@ -30,10 +28,6 @@ class NetworkStatus():
         else:
             if(not self.__defaultRouterActive):
                 status = 'Default Router Down'
-            if(not self.__cellRouterActive):
-                if status != '':
-                    status += ', '
-                status += 'Cell Router Down'
             if(not self.__remoteDNSActive):
                 if status != '':
                     status += ', '
@@ -49,10 +43,6 @@ class NetworkStatus():
         return self.__defaultRouterActive
 
     @property
-    def cellRouterActive(self):
-        return self.__cellRouterActive
-
-    @property
     def remoteDNSActive(self):
         return self._remoteDNSActive
 
@@ -61,12 +51,10 @@ class NetworkStatus():
         return self.__remoteSiteActive
 
     def isAvailable(self):
-        return (self.__defaultRouterActive and self.__cellRouterActive
-            and self.__remoteDNSActive and self.__remoteSiteActive)
+        return (self.__defaultRouterActive and self.__remoteDNSActive and self.__remoteSiteActive)
 
 def checkStatus():
     defaultRouterActive = False
-    cellRouterActive = False
     remoteDNSActive = False
     remoteSiteActive = False
 
@@ -82,6 +70,9 @@ def checkStatus():
     else:
         logging.warning('no responses from ping to %s', defaultRouterAddress)
 
+
+'''
+    # TODO: move into own script
     # ping the cell router
     #cellRouterAddress = '10.123.123.33'
     cellRouterAddress = os.environ['BINARY_DEFAULT_GATEWAY_ADDRESS']
@@ -93,7 +84,7 @@ def checkStatus():
         cellRouterActive = True
     else:
         logging.warning('no responses from ping to %s', cellRouterAddress)
-
+'''
 
     # ping remove DNS server
     remoteDNSAddress = '8.8.8.8'
@@ -127,12 +118,10 @@ def checkStatus():
 
     logging.info('status check results...')
     logging.info('[Default Router Active]: %s', str(defaultRouterActive))
-    logging.info('[Cell Router Active]: %s', str(cellRouterActive))
     logging.info('[Remote DNS Active]: %s', str(remoteDNSActive))
     logging.info('[Remote Site Active]: %s', str(remoteSiteActive))
 
-    return NetworkStatus(defaultRouterActive, cellRouterActive,
-        remoteDNSActive, remoteSiteActive)
+    return NetworkStatus(defaultRouterActive, remoteDNSActive, remoteSiteActive)
 
 '''
 Take action depending on the network status
@@ -141,7 +130,7 @@ def handleResults(networkStatus):
     # Instantiate new downtime segment util
     downtimeSegmentUtil = DowntimeSegmentUtil()
 
-    if(networkStatus.defaultRouterActive):
+    if(networkStatus.isAvailable()):
         # Check to see if the defaultRouter has JUST become available
         if(downtimeSegmentUtil.downtimeSegmentActive()):
             logging.warning('default router has JUST become available')
@@ -150,6 +139,8 @@ def handleResults(networkStatus):
             
             # instantiate switch util
             switchUtil = SwitchUtil()
+
+            # TODO: issue arp commands
 
             # TODO: wrap in an environment check
             switchUtil.useDefaultRouter()
@@ -170,6 +161,8 @@ def handleResults(networkStatus):
 
             # instantiate switch util
             switchUtil = SwitchUtil()
+
+            # TODO: issue ARP commands
 
             # TODO: invoke commands on switch util (wrap in env check)
             switchUtil.useCellRouter()
@@ -195,7 +188,7 @@ def main():
             break
         else:
             logging.info('sleeping')
-            time.sleep(3)
+            time.sleep(2)
             logging.info('done sleeping')
 
     # take action depending on the results of the network status
