@@ -37,7 +37,7 @@ class SwitchUtil():
 		tn.write('int GigabitEthernet0/8\n')
 
 		print tn.read_until('bid-sw-001(config-if)#')
-		tn.write('switchport access vlan 900\n')
+		tn.write('switchport access ' + str(vlan) + '\n')
 
 		print tn.read_until('bid-sw-001(config-if)#')
 		tn.write('exit\n')
@@ -49,10 +49,6 @@ class SwitchUtil():
 		tn.write('exit\n')		
 
 		print 'done!'
-
-
-		#tn.write('int GigabitEthernet0/8\n')
-		#tn.write('switchport access vlan ' + str(vlan) + ' \n')
 
 	def useDefaultRouter(self):
 		print 'use default router invoked...'
@@ -68,41 +64,3 @@ class SwitchUtil():
 if (__name__ == '__main__'):
 	util = SwitchUtil()
 	util.useDefaultRouter()
-
-'''
-Make the network talk to the cell router
-telnet 10.123.123.35
-admin
-1pmlamsh
-ena
-1pmlamsh
-config t
-int GigabitEthernet0/8
-switchport access vlan 902
-exit
-exit
-exit
-'''
-
-'''
-Make the network talk to the default router
-telnet 10.123.123.35
-admin
-1pmlamsh
-ena
-1pmlamsh
-config t
-int GigabitEthernet0/8
-switchport access vlan 900
-exit
-exit
-exit
-'''
-
-'''
-to verify that switch is configured to use vlan 902 on 0/8:
-telnet w/ config
-ena
-show run
-look for interface gigabitethernet 0/8 (900 or 902) to switch
-'''
