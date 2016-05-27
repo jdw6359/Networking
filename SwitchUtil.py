@@ -39,15 +39,20 @@ class SwitchUtil():
 		print tn.read_until('bid-sw-001(config-if)#')
 		tn.write('switchport access vlan 900\n')
 
-		print 'done, need to close'
+		print tn.read_until('bid-sw-001(config-if)#')
+		tn.write('exit\n')
+
+		print tn.read_until('bid-sw-001(config)#')
+		tn.write('exit')
+
+		print tn.read_until('bid-sw-001#')
+		tn.write('exit\n')		
+
+		print 'done!'
+
 
 		#tn.write('int GigabitEthernet0/8\n')
 		#tn.write('switchport access vlan ' + str(vlan) + ' \n')
-
-		print 'vlan switched to ' + str(vlan)
-		tn.close()
-
-		print 'exited and closed...'
 
 	def useDefaultRouter(self):
 		print 'use default router invoked...'
