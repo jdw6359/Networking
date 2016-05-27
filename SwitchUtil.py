@@ -4,7 +4,6 @@ Communication utility with switch
 
 import os
 import sys
-import logging
 import telnetlib
 
 class SwitchUtil():
@@ -19,49 +18,87 @@ class SwitchUtil():
 		# Instantiate telnet client
 		tn = telnetlib.Telnet(self.__address)
 
-		logging.info('telnet client created')
+		print 'telnet client created'
 
 		tn.read_until('Username: ')
 		tn.write('admin\n')
 
-		logging.info('username prompted and written')
+		print 'username prompted and written'
 
 		tn.read_until('Password: ')
 		tn.write('1pmlamsh\n')
 
-		logging.info('password prompted and written')
+		print 'password prompted and written'
 
 		tn.write('ena\n')
 		tn.read_until('Password: ')
 		tn.write('1pmlamsh\n')
 
-		logging.info('ena written and password prompted / written')
+		print 'ena written and password prompted / written'
 
 		tn.write('config t')
 
-		logging.info('config t entered')
+		print 'config t entered'
 		tn.write('int GigabitEthernet0/8\n')
 		tn.write('switchport access vlan ' + str(vlan) + ' \n')
 
-		logging.info('vlan switched to 900')
+		print 'vlan switched to 900'
 		tn.write('exit')
 		tn.write('exit')
 		tn.write('exit')
 		tn.close()
 
-		logging.info('exited and closed...')
+		print 'exited and closed...'
 
 	def useDefaultRouter(self):
-		logging.info('use default router invoked...')
-		logging.info('change vlan invoked with 900')
+		print 'use default router invoked...'
+		print 'change vlan invoked with 900'
 		self.changeVlan(900)
 
 	def useCellRouter(self):
-		logging.info('use cell router invoked...')
-		logging.info('change vlan invoked with 902')
+		print 'use cell router invoked...'
+		print 'change vlan invoked with 902'
 		self.changeVlan(902)
 
 
 if (__name__ == '__main__'):
 	util = SwitchUtil()
 	util.useDefaultRouter()
+
+'''
+Make the network talk to the cell router
+telnet 10.123.123.35
+admin
+1pmlamsh
+ena
+1pmlamsh
+config t
+int GigabitEthernet0/8
+switchport access vlan 902
+exit
+exit
+exit
+'''
+
+'''
+Make the network talk to the default router
+telnet 10.123.123.35
+admin
+1pmlamsh
+ena
+1pmlamsh
+config t
+int GigabitEthernet0/8
+switchport access vlan 900
+exit
+exit
+exit
+'''
+
+'''
+to verify that switch is configured to use vlan 902 on 0/8:
+telnet w/ config
+ena
+show run
+look for interface gigabitethernet 0/8 (900 or 902) to switch
+'''
