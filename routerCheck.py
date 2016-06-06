@@ -71,21 +71,6 @@ def checkStatus():
         logging.warning('no responses from ping to %s', defaultRouterAddress)
 
 
-    '''
-    # TODO: move into own script
-    # ping the cell router
-    #cellRouterAddress = '10.123.123.33'
-    cellRouterAddress = os.environ['BINARY_DEFAULT_GATEWAY_ADDRESS']
-    logging.info('cell router address: %s', str(cellRouterAddress))
-    logging.info('pinging cell router...%s', str(cellRouterAddress))
-    pingResponse = utils.pingAddress(cellRouterAddress)
-    if pingResponse == 0:
-        logging.info('response from ping: %s', pingResponse)
-        cellRouterActive = True
-    else:
-        logging.warning('no responses from ping to %s', cellRouterAddress)
-    '''
-
     # ping remove DNS server
     remoteDNSAddress = '8.8.8.8'
     logging.info('pinging remote dns address: %s', remoteDNSAddress)

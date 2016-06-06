@@ -4,4 +4,5 @@ SHELL=/bin/bash
 # TODO: reduce this list as appropriate
 
 #########################################################3
-* * * * * . $HOME/.sharks; python $BINARY_PROJECT_PATH/check.py >> $BINARY_PROJECT_PATH/cron_output.txt 2>&1
+* * * * * . $HOME/.sharks; python $BINARY_PROJECT_PATH/routerCheck.py >> $BINARY_PROJECT_PATH/cronRouterOutput.txt 2>&1
+* * * * * . $HOME/.sharks; python $BINARY_PROJECT_PATH/cellCheck.py >> $BINARY_PROJECT_PATH/cronCellOutput.txt 2>&1
