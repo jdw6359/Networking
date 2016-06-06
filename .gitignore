@@ -1,4 +1,5 @@
-cron_output.txt
 *.pyc
 logger.log
 downtime_segment.txt
+cronRouterOutput.txt
+cronCellOutput.txt
