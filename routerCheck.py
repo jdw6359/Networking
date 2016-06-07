@@ -11,6 +11,7 @@ import logging
 
 import utils
 from SwitchUtil import *
+from CellRouterUtil import *
 from DowntimeSegmentUtil import *
 from FleetMonitorClient import *
 
@@ -124,15 +125,23 @@ def handleResults(networkStatus):
             
             # instantiate switch util
             switchUtil = SwitchUtil()
+            # instantiate cell router util
+            cellRouterUtil = CellRouterUtil()
 
             utils.arpWipe()
             # TODO: wrap in an environment check
             switchUtil.useDefaultRouter()
 
+            # Default internet connection is now available,
+            # disable wifi connection through cell router
+            cellRouterUtil.disableWifi()
+
             # TODO: MAKE SURE that network has been properly reconfigured
             # before ending downtime, otherwise posting of downtime segment
             # will likely fail
             downtimeSegmentUtil.endDowntime()
+
+
 
     else:
         # If there is not an active downtime segment,
@@ -145,11 +154,16 @@ def handleResults(networkStatus):
 
             # instantiate switch util
             switchUtil = SwitchUtil()
+            # instantiate cell router util
+            cellRouterUtil = CellRouterUtil()
 
             utils.arpWipe()
             # TODO: invoke commands on switch util (wrap in env check)
             switchUtil.useCellRouter()
 
+            # Default internet connection is not available,
+            # enable wifi connection through cell router
+            cellRouterUtil.enableWifi()
 '''
 Attempt to write the results up to the web service
 '''
